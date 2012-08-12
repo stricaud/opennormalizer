@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<normalizer version='1.0'>
+
+<head>
+	<datatype>syslog</datatype>
+	<revision>1</revision>
+	<tags>syslog,linux</tags>
+	<created></created>
+	<modified></modified>
+	<author>Sebastien Tricaud (sebastien@honeynet.org)</author>
+</head>
+
+<slice>
+	<slicer type="pcre" name="standard syslog">
+	<pcre>
+	  <![CDATA[
+		   (\w+\s+\d+\s+\d+:\d+:\d+) (\S+) ([a-zA-Z/]+)\S*: (.*)
+	  ]]>
+	</pcre>
+
+	<columns>
+		<column name="Time" type="datetime" group="" tags="">
+			<time-format>MMM d H:m:ss</time-format>
+		</column>
+		<column name="Machine" type="enum" group="" tags="" />
+		<column name="Service" type="enum" group="" tags="" />
+		<column name="Log" type="string" group="" tags="" />
+	</columns>
+
+	</slicer>
+</slice>
+
+</normalizer>
+
