@@ -152,7 +152,7 @@ class NormalizerHandler:
 		return self.slicers
 
 if __name__ == "__main__":
-	nh = NormalizerHandler("../normalizers/syslog.normalizer")
+	nh = NormalizerHandler("../../normalizers/syslog.normalizer")
 	head = nh.get_head()
 	# print(str(head))
 	slicers = nh.get_slicers()
