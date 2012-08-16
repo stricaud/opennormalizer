@@ -37,14 +37,15 @@ class Stream2EventsStream:
             if self.count_streambuf == self.max_streambuf:
                 # We collected enough, so we normalize
                 self.collected_buffer += data
-                retval = self._normalize()
+                (n_events, normalized) = self._normalize()
                 self._flush_collected_stream()
             else:
-                retval = self._need_to_collect_more(data)
+                normalized = self._need_to_collect_more(data)
+                n_events = 0
         else:                   # if not terminate
             if self.count_streambuf < self.max_streambuf:
                 self.collected_buffer += data
-                retval = self._normalize()
+                (n_events, normalized) = self._normalize()
                 self._flush_collected_stream()
         
-        return retval
+        return (n_events, normalized)
