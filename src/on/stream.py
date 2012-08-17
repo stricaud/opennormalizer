@@ -12,6 +12,8 @@ class Stream2EventsStream:
     count_streambuf = 0
     collected_buffer = b''
 
+    pdata = {}
+
     def __init__(self, normalizedHandler, slicerHandler):
         self.nh = normalizedHandler
         self.sh = slicerHandler
@@ -23,7 +25,7 @@ class Stream2EventsStream:
     def _normalize(self):
         for slicer_t in self.nh.get_slicers():
             s = self.sh.get_slicer(slicer_t['type'])
-            sliced_buf = s.slice_buffer(slicer_t, self.collected_buffer)
+            sliced_buf = s.slice_buffer(slicer_t, self.collected_buffer, self.pdata)
         
         return sliced_buf
 
