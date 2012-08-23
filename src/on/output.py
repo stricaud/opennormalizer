@@ -17,8 +17,8 @@ class Output:
         self.normalizer_handler = normalizer_handler
         self.outputs_list = self.get_list()
         self.load_outputs()
-        self.output_plugin = self.outputs[self.output_plugin_name]
-
+        plugin = self.outputs[self.output_plugin_name]
+        self.output_plugin = plugin.OutputPlugin()
 
     def get_list(self):
         return os.listdir(self.plugins_dir)
@@ -28,7 +28,8 @@ class Output:
         for output in self.outputs_list:
             if not output.startswith('_'):
                 modulepath = "on.plugins.output." + output
-                self.outputs[output] = importlib.__import__(modulepath, fromlist=['output_w', 'start_w', 'end_w'])
+                module = importlib.__import__(modulepath, fromlist=['OutputPlugin'])
+                self.outputs[output] = module
 
     def get_output(self, output_name):
         return self.outputs[output_name]

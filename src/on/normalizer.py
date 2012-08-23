@@ -151,6 +151,10 @@ class NormalizerHandler:
 	def get_slicers(self):
 		return self.slicers
 
+	def get_col(self, n):
+		slicer = self.slicers[0] # FIXME, don't rely on the first slicer!
+		return slicer['columns'][n]
+
 if __name__ == "__main__":
 	nh = NormalizerHandler("../../normalizers/syslog.normalizer")
 	head = nh.get_head()

@@ -20,7 +20,7 @@
 
 	<columns>
 		<column name="Time" type="datetime" group="" tags="">
-			<time-format>MMM d H:m:ss</time-format>
+			<time-format>%b %d %H:%M:%S</time-format>
 		</column>
 		<column name="Machine" type="enum" group="" tags="" />
 		<column name="Service" type="enum" group="" tags="" />

@@ -2,21 +2,25 @@
 # Maybe the most basic plugin
 #
 
-def start_w(normalizer_handler):
-    pass
+class OutputPlugin:
+    def __init__(self):
+        pass
 
-def output_w(normalized_data):
-    col = 0
-    outbuf = ""
-    while col < len(normalized_data):
-        colbuf = normalized_data[col].replace("\"", "\\\"")
-        outbuf += "\"" + colbuf + "\"" + ";"
+    def start_w(self, normalizer_handler):
+        pass
 
-        col += 1
+    def output_w(self, normalized_data):
+        col = 0
+        outbuf = ""
+        while col < len(normalized_data):
+            colbuf = normalized_data[col].replace("\"", "\\\"")
+            outbuf += "\"" + colbuf + "\"" + ";"
 
-    print(outbuf[:-1])
+            col += 1
 
-    return True
+        print(outbuf[:-1])
 
-def end_w():
-    pass
+        return True
+
+    def end_w(self):
+        pass
