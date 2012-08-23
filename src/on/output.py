@@ -12,9 +12,13 @@ class Output:
 
     outputs = {}
 
-    def __init__(self):
+    def __init__(self, normalizer_handler, output_plugin_name):
+        self.output_plugin_name = output_plugin_name
+        self.normalizer_handler = normalizer_handler
         self.outputs_list = self.get_list()
         self.load_outputs()
+        self.output_plugin = self.outputs[self.output_plugin_name]
+
 
     def get_list(self):
         return os.listdir(self.plugins_dir)
@@ -24,13 +28,17 @@ class Output:
         for output in self.outputs_list:
             if not output.startswith('_'):
                 modulepath = "on.plugins.output." + output
-                self.outputs[output] = importlib.__import__(modulepath, fromlist=['output_w'])
+                self.outputs[output] = importlib.__import__(modulepath, fromlist=['output_w', 'start_w', 'end_w'])
 
     def get_output(self, output_name):
         return self.outputs[output_name]
 
-    def write(self, output_plugin, normalized_data):
-        output = self.outputs[output_plugin]
-        # True if data were correcly written
-        return output.output_w(normalized_data)
+    def start(self):
+        return self.output_plugin.start_w(self.normalizer_handler)
 
+    def write(self, normalized_data):
+        # True if data were correcly written
+        return self.output_plugin.output_w(normalized_data)
+
+    def end(self):
+        return self.output_plugin.end_w()

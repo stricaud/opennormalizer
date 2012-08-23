@@ -1,3 +1,10 @@
+#
+# Maybe the most basic plugin
+#
+
+def start_w(normalizer_handler):
+    pass
+
 def output_w(normalized_data):
     col = 0
     outbuf = ""
@@ -10,3 +17,6 @@ def output_w(normalized_data):
     print(outbuf[:-1])
 
     return True
+
+def end_w():
+    pass
