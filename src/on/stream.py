@@ -35,6 +35,9 @@ class Stream2EventsStream:
         return []
 
     def get(self, data, terminate=False):
+        n_events = 0
+        normalized = []
+
         if not terminate:
             if self.count_streambuf == self.max_streambuf:
                 # We collected enough, so we normalize
@@ -45,9 +48,9 @@ class Stream2EventsStream:
                 normalized = self._need_to_collect_more(data)
                 n_events = 0
         else:                   # if not terminate
-            if self.count_streambuf < self.max_streambuf:
-                self.collected_buffer += data
-                (n_events, normalized) = self._normalize()
-                self._flush_collected_stream()
+            # if self.count_streambuf < self.max_streambuf:
+            self.collected_buffer += data
+            (n_events, normalized) = self._normalize()
+            self._flush_collected_stream()
         
         return (n_events, normalized)
