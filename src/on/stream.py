@@ -22,12 +22,45 @@ class Stream2EventsStream:
         self.count_streambuf = 0
         self.collected_buffer = b''
 
-    def _normalize(self):
-        for slicer_t in self.nh.get_slicers():
-            s = self.sh.get_slicer(slicer_t['type'])
-            sliced_buf = s.slice_buffer(slicer_t, self.collected_buffer, self.pdata)
-        
-        return sliced_buf
+    def get_slicer(self, slicer_id):
+        return self.nh.get_slicers()[slicer_id]
+
+    def _get_root_slicer(self):
+        return self.get_slicer(0)
+
+    def _normalize_subslice(self, slicer, data):
+        s = self.sh.get_slicer(slicer['type'])
+        (n_events, sliced_buf) = s.slice_buffer(slicer, data, None)
+
+        return (n_events, sliced_buf)
+
+    def _normalize_line(self, slicer, main_sliced_buf):
+        line_n = 0
+
+        for line in main_sliced_buf:
+            col_n = 0
+            for col in slicer['columns']:
+                if col['slicer'] is not None:
+                    slicer_id = col['slicer-id']
+                    child_slicer = self.get_slicer(slicer_id)
+                    (sub_n_events, subsliced_buf) = self._normalize_subslice(child_slicer, line[col_n].encode('utf-8'))
+                    line.pop(col_n)
+                    for el in subsliced_buf.__reversed__():
+                        line.insert(col_n, el)
+
+                col_n += 1
+
+            line_n += 1
+
+        return main_sliced_buf
+
+    def _normalize(self, slicer):
+        s = self.sh.get_slicer(slicer['type'])
+        (n_events, main_sliced_buf) = s.slice_buffer(slicer, self.collected_buffer, self.pdata)
+
+        main_sliced_buf = self._normalize_line(slicer, main_sliced_buf)
+
+        return (n_events, main_sliced_buf)
 
     def _need_to_collect_more(self, data):
         self.collected_buffer += data
@@ -42,15 +75,18 @@ class Stream2EventsStream:
             if self.count_streambuf == self.max_streambuf:
                 # We collected enough, so we normalize
                 self.collected_buffer += data
-                (n_events, normalized) = self._normalize()
+                (n_events, normalized) = self._normalize(self._get_root_slicer())
                 self._flush_collected_stream()
             else:
                 normalized = self._need_to_collect_more(data)
                 n_events = 0
-        else:                   # if not terminate
+        else: # if not terminate
             # if self.count_streambuf < self.max_streambuf:
             self.collected_buffer += data
-            (n_events, normalized) = self._normalize()
+            try:
+                (n_events, normalized) = self._normalize(self._get_root_slicer())
+            except ValueError:
+                print("Nothing was normalized")
             self._flush_collected_stream()
         
         return (n_events, normalized)

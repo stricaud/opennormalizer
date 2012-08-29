@@ -15,45 +15,45 @@ def slice_buffer(slicer, buffer_chunk, pdata):
     for column in slicer['columns']:
         for tag in column['tags']:
             if tag == "http-credential":
-                retval.append(str(url['credential']))
+                retval.append(url['credential'].decode("ascii"))
                 n_events += 1
                 continue
             if tag == "http-domain":
-                retval.append(str(url['domain']))
+                retval.append(url['domain'].decode("ascii"))
                 n_events += 1
                 continue
             if tag == "http-subdomain":
-                retval.append(str(url['subdomain']))
+                retval.append(url['subdomain'].decode("ascii"))
                 n_events += 1
                 continue
             if tag == "http-fragment":
-                retval.append(str(url['fragment']))
+                retval.append(url['fragment'].decode("ascii"))
                 n_events += 1
                 continue
             if tag == "http-host":
-                retval.append(str(url['host']))
+                retval.append(url['host'].decode("ascii"))
                 n_events += 1
                 continue
             if tag == "http-resource_path":
-                retval.append(str(url['resource_path']))
+                retval.append(url['resource_path'].decode("ascii"))
                 n_events += 1
                 continue
             if tag == "http-tld":
-                retval.append(str(url['tld']))
+                retval.append(url['tld'].decode("ascii"))
                 n_events += 1
                 continue
             if tag == "http-query_string":
-                retval.append(str(url['query_string']))
+                retval.append(url['query_string'].decode("ascii"))
                 n_events += 1
                 continue
             if tag == "http-scheme":
-                retval.append(str(url['scheme']))
+                retval.append(url['scheme'].decode("ascii"))
                 n_events += 1
                 continue
             if tag == "http-port":
-                retval.append(str(url['port']))
+                retval.append(url['port'].decode("ascii"))
                 n_events += 1
                 continue
-    
+
     return (n_events, retval)
 

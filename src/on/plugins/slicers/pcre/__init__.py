@@ -24,7 +24,7 @@ def slice_buffer(slicer, buffer_chunk, pdata):
 
     m_iter = rx.finditer(sbuffer)
     for m in m_iter:
-        retval.append(m.groups())
+        retval.append(list(m.groups()))
         sbuffer_match_last = m.end(0)
 
         n_events += 1
