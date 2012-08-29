@@ -3,6 +3,12 @@
 import sys
 from pyfurl.furl import Furl
 
+def _get_url_val(url, field):
+    if url[field] is not None:
+        return url[field].decode("ascii")
+
+    return ""
+
 def slice_buffer(slicer, buffer_chunk, pdata):
     sbuffer = buffer_chunk.decode("utf-8")
 
@@ -15,43 +21,44 @@ def slice_buffer(slicer, buffer_chunk, pdata):
     for column in slicer['columns']:
         for tag in column['tags']:
             if tag == "http-credential":
-                retval.append(url['credential'].decode("ascii"))
+                retval.append(_get_url_val(url, 'credential'))
                 n_events += 1
                 continue
             if tag == "http-domain":
-                retval.append(url['domain'].decode("ascii"))
+                retval.append(_get_url_val(url, 'domain'))
                 n_events += 1
                 continue
             if tag == "http-subdomain":
-                retval.append(url['subdomain'].decode("ascii"))
+                retval.append(_get_url_val(url, 'subdomain'))
                 n_events += 1
                 continue
             if tag == "http-fragment":
-                retval.append(url['fragment'].decode("ascii"))
+                retval.append(_get_url_val(url, 'fragment'))
                 n_events += 1
                 continue
             if tag == "http-host":
-                retval.append(url['host'].decode("ascii"))
+                retval.append(_get_url_val(url, 'host'))
                 n_events += 1
                 continue
             if tag == "http-resource_path":
-                retval.append(url['resource_path'].decode("ascii"))
+                retval.append(_get_url_val(url, 'resource_path'))
                 n_events += 1
                 continue
             if tag == "http-tld":
-                retval.append(url['tld'].decode("ascii"))
+                
+                retval.append(_get_url_val(url, 'tld'))
                 n_events += 1
                 continue
             if tag == "http-query_string":
-                retval.append(url['query_string'].decode("ascii"))
+                retval.append(_get_url_val(url, 'query_string'))
                 n_events += 1
                 continue
             if tag == "http-scheme":
-                retval.append(url['scheme'].decode("ascii"))
+                retval.append(_get_url_val(url, 'scheme'))
                 n_events += 1
                 continue
             if tag == "http-port":
-                retval.append(url['port'].decode("ascii"))
+                retval.append(_get_url_val(url, 'port'))
                 n_events += 1
                 continue
 
