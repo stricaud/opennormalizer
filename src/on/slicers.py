@@ -24,7 +24,7 @@ class SlicersHandler:
             if not slicer.startswith('_'):
                 modulepath = "on.plugins.slicers." + slicer
                 # print("\t" + modulepath)
-                self.slicers[slicer] = importlib.__import__(modulepath, fromlist=['slice_buffer'])
+                self.slicers[slicer] = importlib.__import__(modulepath, fromlist=['SlicerPlugin'])
 
     def get_slicer(self, slicer_name):
-        return self.slicers[slicer_name]
+        return self.slicers[slicer_name].SlicerPlugin()

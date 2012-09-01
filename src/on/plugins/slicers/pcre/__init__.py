@@ -1,38 +1,42 @@
 import re
 import sys
 
+class SlicerPlugin:
+    def __init__(self):
+        pass
 
-# FIXME: at some point, slicer['data'] must be a compiled regex. 
-def slice_buffer(slicer, buffer_chunk, pdata):
-    sbuffer = buffer_chunk.decode("utf-8")
-    rx = re.compile(slicer['data'])
+    # FIXME: at some point, slicer['data'] must be a compiled regex. 
+    def slice_buffer(self, slicer, buffer_chunk, pdata):
+        sbuffer = buffer_chunk.decode("utf-8")
+        rx = re.compile(slicer['data'])
 
-    try:
-        pb = pdata["prepend_buf"]
-        if pb != "":
-            sbuffer = pdata["prepend_buf"] + sbuffer
+        try:
+            pb = pdata["prepend_buf"]
+            if pb != "":
+                sbuffer = pdata["prepend_buf"] + sbuffer
 
-        pdata["prepend_buf"] = ""
-    except KeyError:
-        pdata["prepend_buf"] = ""
+            pdata["prepend_buf"] = ""
+        except KeyError:
+            pdata["prepend_buf"] = ""
 
-    lenbuf = len(sbuffer)
-    sbuffer_match_last = lenbuf
+        lenbuf = len(sbuffer)
+        sbuffer_match_last = lenbuf
 
-    retval = []
-    n_events = 0
+        retval = []
+        n_events = 0
 
-    m_iter = rx.finditer(sbuffer)
-    for m in m_iter:
-        retval.append(list(m.groups()))
-        sbuffer_match_last = m.end(0)
+        m_iter = rx.finditer(sbuffer)
+        for m in m_iter:
+            retval.append(list(m.groups()))
+            sbuffer_match_last = m.end(0)
 
-        n_events += 1
+            n_events += 1
 
-    not_matched_buf = lenbuf - sbuffer_match_last
-    if not_matched_buf > 0:
-        # We are missing stuff
-        pdata["prepend_buf"] = sbuffer[:not_matched_buf]
+        not_matched_buf = lenbuf - sbuffer_match_last
+        if not_matched_buf > 0:
+            # We are missing stuff
+            pdata["prepend_buf"] = sbuffer[:not_matched_buf]
 
-    return (n_events, retval)
+        return (n_events, retval)
+
 
