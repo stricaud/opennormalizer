@@ -4,6 +4,7 @@
 <head>
 	<datatype>syslog</datatype>
 	<revision>1</revision>
+	<onpath>linux.syslog.text</onpath>
 	<tags>syslog,linux</tags>
 	<created></created>
 	<modified></modified>
