@@ -4,7 +4,11 @@
 ## Copyright (C) 2012 Sebastien Tricaud <sebastien@honeynet.org>
 ## License: DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE v2, December 2004
 
+import os
 import xml.etree.ElementTree as etree
+
+from on.slicers import SlicersHandler
+from on.stream import Stream2EventsStream
 
 class NormalizerHandler_Exception(Exception):
 	pass
@@ -154,6 +158,50 @@ class NormalizerHandler:
 	def get_col(self, n):
 		slicer = self.slicers[0] # FIXME, don't rely on the first slicer!
 		return slicer['columns'][n]
+
+class NormalizerFactory:
+	def __init__(self, normalizers_nonstandard_path=None):
+		if normalizers_nonstandard_path is not None:
+			self.normalizers_path = normalizers_nonstandard_path
+		else:
+			self.normalizers_path = "/etc/on/normalizers/"
+
+	def get_list(self):
+		l = []
+		for f in os.listdir(self.normalizers_path):
+			if f.endswith(".normalizer"):
+				l.append(self.normalizers_path + os.sep + f)
+
+		return l
+
+	def discover(self, data):
+		# Return a list of plugins with match count
+		
+		discovered = {}
+
+		# 1) We need the slicers
+		sh = SlicersHandler()
+		sh.load_slicers()
+
+		# 2) For each normalizer, we see how much stuff is matched
+		normalizers_list = self.get_list()
+		for normalizer in normalizers_list:
+			nh = NormalizerHandler(normalizer)
+			stream2events = Stream2EventsStream(nh, sh)
+			(n_events, normalized) = stream2events.get(data, terminate=True)
+			discovered[normalizer] = n_events
+
+		return discovered
+
+	def get_first_best_match(self, discovered):
+		bestk = ""
+		bestv = 0
+		for k,v in discovered.items():
+			if v > bestv:
+				bestv = v
+				bestk = k
+
+		return bestk
 
 if __name__ == "__main__":
 	nh = NormalizerHandler("../../normalizers/syslog.normalizer")
